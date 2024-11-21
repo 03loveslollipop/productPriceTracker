@@ -4,8 +4,10 @@ import (
 	//"context"
 	//"fmt"
 	//"encoding/json"
+	"fmt"
 	"net/http"
 	pdtapi "productPriceTrackerAPI/pkg/productpricetracker_api"
+
 	"cloud.google.com/go/firestore"
 	"firebase.google.com/go/v4/auth"
 	"github.com/gin-gonic/gin"
@@ -21,6 +23,10 @@ func authMiddleware(auth *auth.Client) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		//get the token from the header
 		token := c.GetHeader("X-Authorization-Token")
+		if token == "debug" {
+			c.Next()
+			return
+		} //TODO: remove this line for production
 		//verify the token
 		_, err := auth.VerifyIDToken(c, token)
 		if err != nil {
@@ -49,10 +55,21 @@ func getAllProductsHandler(db *firestore.Client) gin.HandlerFunc {
 	}
 }
 
+// func getAllCombosHandler(db *firestore.Client) gin.HandlerFunc {
+// 	return func(c *gin.Context) {
+// 		//get all products from the db
+// 		combos, err := pdtapi.GetCombos(db)
+// 		if err != nil {
+// 			c.JSON(http.StatusInternalServerError, gin.H{
+// 				"error": "error getting combos",
+// 			})
+// 			return
+// 		}
+// 		c.JSON(http.StatusOK, combos)
+// 	}
+// }
+
 //post tracking request handler
-
-
-
 func postTrackingRequestHandler(db *firestore.Client) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
@@ -105,7 +122,12 @@ func postTrackingRequestHandler(db *firestore.Client) gin.HandlerFunc {
 
 		//check if the product ids are in the db
 		products, err := pdtapi.GetProducts(db)
-
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": err.Error(),
+			}) //return internal server error (HTTP 500)
+			return
+		}
 
 		for _, id := range req.ProductIDs {
 			found := false
@@ -126,7 +148,15 @@ func postTrackingRequestHandler(db *firestore.Client) gin.HandlerFunc {
 
 		//add the tracking request to the db
 		err = pdtapi.AddTrackingRequest(db, req)
-		
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": err.Error(),
+			}) //return internal server error (HTTP 500)
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{
+			"message": "tracking request added successfully",
+		}) //return success (HTTP 200)
 	}
 }
 
@@ -143,6 +173,7 @@ func setupRouter(db *firestore.Client, auth *auth.Client) *gin.Engine {
 
 func main() {
 	//init the firebase app
+	fmt.Println("Testing mail check", pdtapi.CheckEmail("test@test.com"))
 	app := pdtapi.InitFirebaseApp(firebaseConfigFile)
 	db := pdtapi.InitFirestore(app)
 	auth := pdtapi.InitFirebaseAuth(app)
