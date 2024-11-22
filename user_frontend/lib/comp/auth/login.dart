@@ -43,6 +43,7 @@ class _LoginState extends State<Login> {
     }
     print('Formulario válido');
     User? user;
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(
@@ -60,6 +61,7 @@ class _LoginState extends State<Login> {
       print("error relacionado con firebase: ${e.code}");
       if (e.code == 'invalid-credential') {
         //push error message
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Correo electrónico o contraseña incorrectos'),
@@ -71,6 +73,7 @@ class _LoginState extends State<Login> {
     if (user == null) {
       print('Error al iniciar sesión');
       //push error message
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Error al iniciar sesión'),
@@ -160,6 +163,7 @@ class _LoginState extends State<Login> {
                 onPressed: () async{
                   final result = await _validateForm();
                   if (result) {
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
                     pushToSelection();
                   }
                 },

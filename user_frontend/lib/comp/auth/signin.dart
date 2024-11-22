@@ -200,6 +200,7 @@ class _SignInState extends State<SignIn> {
                   }
                   print("log is valid");
                   //create a spinner
+                  ScaffoldMessenger.of(context).removeCurrentSnackBar();
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Row(
@@ -217,12 +218,14 @@ class _SignInState extends State<SignIn> {
                     user = await AuthService.createUsr(_email.text, _password.text);
                   }on FirebaseAuthException catch(e){
                     if (e.code == 'weak-password') {
+                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text('La contraseña es muy débil, recuerde que debe tener al menos 6 caracteres'),
                         ),
                       );
                     } else if (e.code == 'email-already-in-use') {
+                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text('El correo utilizado ya está en uso, si olvidó su contraseña puede recuperarla'),
@@ -232,6 +235,7 @@ class _SignInState extends State<SignIn> {
                   }
                   if (user != null) {
                     //remove the spinner
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
                     pushToSelection();
                   }
 
