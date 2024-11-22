@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1040136423736",
+    "project_id": "product-price-tracker-c21a1",
+    "storage_bucket": "product-price-tracker-c21a1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1040136423736:android:3473930549e6397e0099cd",
+        "android_client_info": {
+          "package_name": "com.zerotwoloveslollipop.ppt"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyArb-JzAMjtwQC3UDFh9S0yhmTpXwK7h8E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
