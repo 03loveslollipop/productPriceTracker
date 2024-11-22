@@ -29,6 +29,12 @@ class Navbar extends AppBar {
                     icon: Icon(Icons.logout),
                     onPressed: () async {
                       await AuthService.signOut(); // Assuming you have this method
+                      //message to user
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Sesión cerrada'),
+                        ),
+                      );
                       // Add navigation or state refresh logic here
                       pushToLogin() {
                         Navigator.push(
